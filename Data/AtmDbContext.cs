@@ -13,6 +13,14 @@ namespace ChallengeApiAtm.Data
 
         public AtmDbContext(DbContextOptions<AtmDbContext> options) : base(options)
         {
-        }     
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Cuenta>().ToTable("Cuenta");
+            modelBuilder.Entity<Operacion>().ToTable("Operacion");
+            modelBuilder.Entity<Tarjeta>().ToTable("Tarjeta");
+            modelBuilder.Entity<TarjetaCredencial>().ToTable("TarjetaCredencial");
+        }
     }
 }
