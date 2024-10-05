@@ -19,7 +19,6 @@ namespace ChallengeApiAtm.Modelos
 
         [Required]
         public decimal Saldo { get; set; }
-        public int? UltimaExtraccionId { get; set; }
         public virtual Tarjeta Tarjeta { get; set; }
         public virtual ICollection<Operacion>  Operaciones { get; set; }
     }

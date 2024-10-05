@@ -17,17 +17,17 @@ namespace ChallengeApiAtm.Migrations
             var password = "10000.LCvGVSoB+pCir4GWgvrxIw==.tpkTQx+7/TliA6Y3gL2XLTJoSCaZgUJquKxpLL056wk=";  //Password = 1234;
                             
             migrationBuilder.Sql(@"
-            INSERT INTO Cuenta (NombreUsuario, NumeroCuenta, Saldo, UltimaExtraccionId) VALUES 
-            ('Juan Perez', '1234567890', 1500.00, NULL),
-            ('Maria Lopez', '0987654321', 3500.00, NULL),
-            ('Carlos Gomez', '1122334455', 5000.00, NULL),
-            ('Ana Martinez', '5566778899', 2000.00, NULL),
-            ('Luis Fernandez', '6677889900', 800.00, NULL),
-            ('Sofia Garcia', '7788990011', 1200.00, NULL),
-            ('Pablo Diaz', '9988776655', 4300.00, NULL),
-            ('Laura Ortega', '2233445566', 2750.00, NULL),
-            ('Federico Ruiz', '3344556677', 5900.00, NULL),
-            ('Gabriela Castro', '4455667788', 6200.00, NULL);
+            INSERT INTO Cuenta (NombreUsuario, NumeroCuenta, Saldo) VALUES 
+            ('Juan Perez', '1234567890', 1500.00),
+            ('Maria Lopez', '0987654321', 3500.00),
+            ('Carlos Gomez', '1122334455', 5000.00),
+            ('Ana Martinez', '5566778899', 2000.00),
+            ('Luis Fernandez', '6677889900', 800.00),
+            ('Sofia Garcia', '7788990011', 1200.00),
+            ('Pablo Diaz', '9988776655', 4300.00),
+            ('Laura Ortega', '2233445566', 2750.00),
+            ('Federico Ruiz', '3344556677', 5900.00),
+            ('Gabriela Castro', '4455667788', 6200.00);
 
             INSERT INTO Tarjeta (NumeroTarjeta, CuentaId) VALUES 
             ('1111222233334444', (SELECT Id FROM Cuenta WHERE NumeroCuenta = '1234567890')),
