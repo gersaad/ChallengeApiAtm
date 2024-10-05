@@ -74,7 +74,7 @@ builder.Services.Configure<PasswordHashingConfig>(builder.Configuration.GetSecti
 builder.Services.AddScoped<ILoginRepository, LoginRepository>();
 builder.Services.AddTransient<IPasswordHasherRepository, PasswordHasherRepository>();
 builder.Services.AddScoped<ICuentaRepository, CuentaRepository>();
-
+builder.Services.AddScoped<ITarjetaRepository, TarjetaRepository>();
 
 var app = builder.Build();
 

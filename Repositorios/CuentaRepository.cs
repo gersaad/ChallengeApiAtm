@@ -9,14 +9,10 @@ namespace ChallengeApiAtm.Repositorios
     public class CuentaRepository : ICuentaRepository
     {
         private readonly AtmDbContext _context;
-        private readonly IConfiguration _configuration;
 
-
-        public CuentaRepository(AtmDbContext context, IConfiguration configuration)
+        public CuentaRepository(AtmDbContext context)
         {
             _context = context;
-            _configuration = configuration;
-
         }
 
         /// <summary>

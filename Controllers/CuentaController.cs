@@ -24,7 +24,7 @@ namespace ChallengeApiAtm.Controllers
         /// <param name="numeroTarjeta"></param>
         /// <returns> Informe saldo </returns>
         [Authorize] 
-        [HttpGet("saldo")]
+        [HttpGet("Saldo")]
         public async Task<IActionResult> GetSaldo([FromQuery] string numeroTarjeta)
         {
             var saldo = await _cuenta.ObtenerSaldoPorNroTarjeta(numeroTarjeta);
@@ -38,10 +38,10 @@ namespace ChallengeApiAtm.Controllers
         /// <summary>
         ///  Permite realizar extracciones 
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="retiro"></param>
         /// <returns> Resumen operacion </returns>
         [Authorize] 
-        [HttpPost("retiro")]
+        [HttpPost("Retiro")]
         public async Task<IActionResult> Retiro([FromBody] RetiroDTO retiro)
         {
             var extraccion = await _cuenta.RetiroPorNroTarjeta(retiro);
