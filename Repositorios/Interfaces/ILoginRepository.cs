@@ -5,7 +5,7 @@ namespace ChallengeApiAtm.Repositorios.Interfaces
 {
     public interface ILoginRepository
     {
-        public Task<string> Loguear(LoginDTO tarjeta);
+        Task<string> Loguear(LoginDTO tarjeta);
 
     }
 }
