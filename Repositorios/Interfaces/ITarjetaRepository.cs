@@ -5,6 +5,6 @@ namespace ChallengeApiAtm.Repositorios.Interfaces
 {
     public interface ITarjetaRepository
     {
-        Task<HistorialOperacionDTO> ObtenerHistorialTarjeta(string numeroTarjeta, int pagina, int registrosPorPagina);
+        Task<HistorialOperacionDTO> ObtenerHistorialTarjeta(int pagina, int registrosPorPagina);
     }
 }

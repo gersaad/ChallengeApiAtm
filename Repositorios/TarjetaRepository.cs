@@ -2,6 +2,7 @@
 using ChallengeApiAtm.DTOs;
 using ChallengeApiAtm.Modelos;
 using ChallengeApiAtm.Repositorios.Interfaces;
+using ChallengeApiAtm.Servicios;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChallengeApiAtm.Repositorios
@@ -9,10 +10,13 @@ namespace ChallengeApiAtm.Repositorios
     public class TarjetaRepository : ITarjetaRepository
     {
         private readonly AtmDbContext _context;
-
-        public TarjetaRepository(AtmDbContext context)
+        private readonly IReadClaimService _readClaimService;
+        private readonly string _numeroTarjetaLogin;
+        public TarjetaRepository(AtmDbContext context, IReadClaimService readClaimService)
         {
             _context = context;
+            _readClaimService = readClaimService;
+            _numeroTarjetaLogin = _readClaimService.ObtejerNumeroTarjetaLogueado();
         }
 
 
@@ -22,17 +26,12 @@ namespace ChallengeApiAtm.Repositorios
         /// <param name="numeroTarjeta"></param>
         /// <param name="nroPagina"></param>
         /// <returns> HistorialOperacionDTO  </returns>
-        public async Task<HistorialOperacionDTO> ObtenerHistorialTarjeta(string numeroTarjeta, int nroPagina, int registrosPorPagina)
+        public async Task<HistorialOperacionDTO> ObtenerHistorialTarjeta(int nroPagina, int registrosPorPagina)
         {
             var tarjeta = await _context.Tarjetas
                                  .Include(x => x.Cuenta)
                                  .ThenInclude(x => x.Operaciones)
-                                 .FirstOrDefaultAsync(x => x.NumeroTarjeta == numeroTarjeta);
-
-            if (tarjeta == null)
-            {
-                return null;
-            }
+                                 .FirstOrDefaultAsync(x => x.NumeroTarjeta == _numeroTarjetaLogin);
 
             var totalOperaciones = tarjeta.Cuenta.Operaciones.Count();
             var paginasTotales = (int)Math.Ceiling(totalOperaciones / (double)registrosPorPagina);
@@ -49,6 +48,16 @@ namespace ChallengeApiAtm.Repositorios
                 Fecha = x.Fecha,
             }
             ).ToList();
+
+            if (paginasTotales <= nroPagina)
+            {
+                return null;
+            }
+
+            if (operacionResponse.Count == 0)
+            {
+                return null;
+            }
 
             return new HistorialOperacionDTO
             {

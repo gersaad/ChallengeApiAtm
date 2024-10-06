@@ -3,6 +3,11 @@ using ChallengeApiAtm.Repositorios;
 using ChallengeApiAtm.Repositorios.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+using Microsoft.OpenApi.Validations;
+using ChallengeApiAtm.Modelos;
+using System.Security.Claims;
+using ChallengeApiAtm.Servicios;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,9 +17,8 @@ namespace ChallengeApiAtm.Controllers
     [ApiController]
     public class TarjetaController : ControllerBase
     {
-
         private readonly ITarjetaRepository _tarjeta;
-        public TarjetaController(ITarjetaRepository tarjeta)
+        public TarjetaController(ITarjetaRepository tarjeta , IReadClaimService readClaimService)
         {
             _tarjeta = tarjeta;
         }
@@ -27,12 +31,13 @@ namespace ChallengeApiAtm.Controllers
         /// <returns> Historial Movimientos </returns>
         [Authorize] 
         [HttpGet("Historial")]
-        public async Task<IActionResult> GetHistorialTarjeta([FromQuery] string numeroTarjeta, [FromQuery] int nroPagina = 1, [FromQuery] int registrosPorPagina = 10 )
+        public async Task<IActionResult> GetHistorialTarjeta([FromQuery] int nroPagina = 1, [FromQuery] int registrosPorPagina = 10 )
         {
-            var historial = await _tarjeta.ObtenerHistorialTarjeta(numeroTarjeta, nroPagina, registrosPorPagina);
+         
+            var historial = await _tarjeta.ObtenerHistorialTarjeta(nroPagina, registrosPorPagina);
             if (historial == null)
             {
-                return BadRequest("Numero de Tarjeta Invalido o no tiene movimientos");
+                return BadRequest("La tarjeta no tiene movimientos o pagina fuera de rango");
             }
             return Ok(historial);
         }

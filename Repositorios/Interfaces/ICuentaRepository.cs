@@ -4,8 +4,8 @@ namespace ChallengeApiAtm.Repositorios.Interfaces
 {
     public interface ICuentaRepository
     {
-        Task<SaldoResponseDTO> ObtenerSaldoPorNroTarjeta(string numeroTarjeta);
+        Task<SaldoResponseDTO> ObtenerSaldo();
 
-        Task<RetiroResponseDTO> RetiroPorNroTarjeta(RetiroDTO retiro);
+        Task<RetiroResponseDTO> Retiro(decimal monto);
     }
 }

@@ -1,6 +1,7 @@
 using ChallengeApiAtm.Data;
 using ChallengeApiAtm.Repositorios;
 using ChallengeApiAtm.Repositorios.Interfaces;
+using ChallengeApiAtm.Servicios;
 using ChallengeApiAtm.Tools;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,8 @@ builder.Services.AddDbContext<AtmDbContext>(x => x.UseSqlServer(builder.Configur
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IReadClaimService, ReadClaimService>();
 
 builder.Services.AddSwaggerGen(c =>
 {

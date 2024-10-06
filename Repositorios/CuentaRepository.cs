@@ -2,27 +2,33 @@
 using ChallengeApiAtm.DTOs;
 using ChallengeApiAtm.Modelos;
 using ChallengeApiAtm.Repositorios.Interfaces;
+using ChallengeApiAtm.Servicios;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace ChallengeApiAtm.Repositorios
 {
     public class CuentaRepository : ICuentaRepository
     {
         private readonly AtmDbContext _context;
-
-        public CuentaRepository(AtmDbContext context)
+        private readonly IReadClaimService _readClaimService;
+        private readonly string _numeroTarjetaLogin;
+        public CuentaRepository(AtmDbContext context, IReadClaimService readClaimService)
         {
             _context = context;
+            _readClaimService = readClaimService;
+            _numeroTarjetaLogin = _readClaimService.ObtejerNumeroTarjetaLogueado();
         }
+
 
         /// <summary>
         ///   Obtiene saldo de cuenta por numero de tarjeta
         /// </summary>
         /// <param name="numeroTarjeta"></param>
         /// <returns> Informe de saldo </returns>
-        public async Task<SaldoResponseDTO> ObtenerSaldoPorNroTarjeta(string numeroTarjeta){
+        public async Task<SaldoResponseDTO> ObtenerSaldo(){
 
-            var cuenta = await ObtenerCuentaPorNroTarjeta(numeroTarjeta);
+            var cuenta = await ObtenerCuenta();
             if (cuenta == null)
             {
                 return null;
@@ -45,12 +51,12 @@ namespace ChallengeApiAtm.Repositorios
         /// </summary>
         /// <param name="numeroTarjeta"></param>
         /// <returns> </returns>
-        private async Task<Cuenta> ObtenerCuentaPorNroTarjeta(string numeroTarjeta)
+        private async Task<Cuenta> ObtenerCuenta()
         {
             return await _context.Cuentas
                                  .Include(x => x.Tarjeta)
                                  .Include(x => x.Operaciones)
-                                 .FirstOrDefaultAsync(c => c.Tarjeta.NumeroTarjeta == numeroTarjeta);
+                                 .FirstOrDefaultAsync(c => c.Tarjeta.NumeroTarjeta == _numeroTarjetaLogin);
         }
 
 
@@ -59,9 +65,9 @@ namespace ChallengeApiAtm.Repositorios
         /// </summary>
         /// <param name="retiro"></param>
         /// <returns> Resumen Operacion </returns>
-        public async Task<RetiroResponseDTO> RetiroPorNroTarjeta(RetiroDTO retiro)
+        public async Task<RetiroResponseDTO> Retiro(decimal monto)
         {
-            var cuenta = await ObtenerCuentaPorNroTarjeta(retiro.NumeroTarjeta);
+            var cuenta = await ObtenerCuenta();
             if (cuenta == null)
             {
                 return null;
@@ -69,7 +75,7 @@ namespace ChallengeApiAtm.Repositorios
 
             var fechaOperacion = DateTime.Now;
 
-            if (retiro.Monto > cuenta.Saldo)
+            if (monto > cuenta.Saldo)
             {
                 return null;
             }
@@ -77,13 +83,13 @@ namespace ChallengeApiAtm.Repositorios
             {
                 var extraccion = new Operacion
                 {
-                    Monto = retiro.Monto,
+                    Monto = monto,
                     Fecha = fechaOperacion,
                     Tipo = TipoOperacion.Extraccion,
                     CuentaId = cuenta.Id,
                 };
                 cuenta.Operaciones.Add(extraccion);
-                cuenta.Saldo = cuenta.Saldo - retiro.Monto;
+                cuenta.Saldo = cuenta.Saldo - monto;
 
                 await _context.SaveChangesAsync();
             }
@@ -91,7 +97,7 @@ namespace ChallengeApiAtm.Repositorios
             return new RetiroResponseDTO
             {
                 NumeroCuenta = cuenta.NumeroCuenta,
-                MontoRetirado = retiro.Monto,
+                MontoRetirado = monto,
                 SaldoRestante = cuenta.Saldo,
                 FechaOperacion = fechaOperacion,
                 EstadoOperacion = "Operacion exitosa"

@@ -1,5 +1,6 @@
 ﻿using ChallengeApiAtm.DTOs;
 using ChallengeApiAtm.Repositorios.Interfaces;
+using ChallengeApiAtm.Servicios;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +12,8 @@ namespace ChallengeApiAtm.Controllers
     [ApiController]
     public class CuentaController : ControllerBase
     {
-
         private readonly ICuentaRepository _cuenta;
-        public CuentaController(ICuentaRepository cuenta)
+        public CuentaController(ICuentaRepository cuenta , IReadClaimService readClaimService)
         {
             _cuenta = cuenta;
         }
@@ -25,12 +25,12 @@ namespace ChallengeApiAtm.Controllers
         /// <returns> Informe saldo </returns>
         [Authorize] 
         [HttpGet("Saldo")]
-        public async Task<IActionResult> GetSaldo([FromQuery] string numeroTarjeta)
+        public async Task<IActionResult> GetSaldo()
         {
-            var saldo = await _cuenta.ObtenerSaldoPorNroTarjeta(numeroTarjeta);
+            var saldo = await _cuenta.ObtenerSaldo();
             if (saldo == null)
             {
-                return BadRequest("Numero de Tarjeta Invalido");
+                return BadRequest("Error al obtener el saldo");
             }
             return Ok(saldo);
         }
@@ -42,12 +42,12 @@ namespace ChallengeApiAtm.Controllers
         /// <returns> Resumen operacion </returns>
         [Authorize] 
         [HttpPost("Retiro")]
-        public async Task<IActionResult> Retiro([FromBody] RetiroDTO retiro)
+        public async Task<IActionResult> Retiro([FromQuery] decimal Monto)
         {
-            var extraccion = await _cuenta.RetiroPorNroTarjeta(retiro);
+            var extraccion = await _cuenta.Retiro(Monto);
             if (extraccion == null)
             {
-                return BadRequest("Tarjeta Invalida o Saldo Insuficiente");
+                return BadRequest("Saldo Insuficiente");
             }
             return Ok(extraccion);
         }
