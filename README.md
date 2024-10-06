@@ -61,3 +61,10 @@ Dado un número de tarjeta y la cantidad de páginas a solicitar, se retornará 
 ## DER
 ![DER](https://github.com/user-attachments/assets/4ecbd088-6805-4e54-bfaf-c73d62db8623)
 
+## v2
+Se crea la rama v2 con mejoras significativas en la aplicación
+
+- Se implementa un nuevo servicio que permite extraer el número de tarjeta del token de autenticación, garantizando que los usuarios solo puedan acceder a la información de su propia tarjeta.
+- Se optimiza el control de errores en la aplicación, especificando cada tipo de error posible y devolviendo un BadRequest con un mensaje que describe la causa del error.
+
+
