@@ -26,8 +26,8 @@ namespace ChallengeApiAtm.Controllers
         /// <param name="nroPagina"></param>
         /// <returns> Historial Movimientos </returns>
         [Authorize] 
-        [HttpGet("Historial/{numeroTarjeta}")]
-        public async Task<IActionResult> GetHistorialTarjeta(string numeroTarjeta, [FromQuery] int nroPagina = 1, [FromQuery] int registrosPorPagina = 10 )
+        [HttpGet("Historial")]
+        public async Task<IActionResult> GetHistorialTarjeta([FromQuery] string numeroTarjeta, [FromQuery] int nroPagina = 1, [FromQuery] int registrosPorPagina = 10 )
         {
             var historial = await _tarjeta.ObtenerHistorialTarjeta(numeroTarjeta, nroPagina, registrosPorPagina);
             if (historial == null)
