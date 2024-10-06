@@ -49,14 +49,14 @@ namespace ChallengeApiAtm.Repositorios
             }
             ).ToList();
 
-            if (paginasTotales <= nroPagina)
+            if (operacionResponse.Count == 0 && nroPagina == 1)
             {
-                return null;
+                throw new Exception("La tarjeta no tiene movimientos.");
             }
 
-            if (operacionResponse.Count == 0)
+            if (paginasTotales < nroPagina)
             {
-                return null;
+                throw new Exception("Pagina solicitada fuera de rango.");
             }
 
             return new HistorialOperacionDTO

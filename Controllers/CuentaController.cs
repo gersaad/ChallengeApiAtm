@@ -27,12 +27,16 @@ namespace ChallengeApiAtm.Controllers
         [HttpGet("Saldo")]
         public async Task<IActionResult> GetSaldo()
         {
-            var saldo = await _cuenta.ObtenerSaldo();
-            if (saldo == null)
+            try
             {
-                return BadRequest("Error al obtener el saldo");
+                var saldo = await _cuenta.ObtenerSaldo();
+                return Ok(saldo);
             }
-            return Ok(saldo);
+            catch (Exception ex )
+            {
+                return BadRequest(ex.Message);
+            }
+           
         }
 
         /// <summary>
@@ -44,12 +48,16 @@ namespace ChallengeApiAtm.Controllers
         [HttpPost("Retiro")]
         public async Task<IActionResult> Retiro([FromQuery] decimal Monto)
         {
-            var extraccion = await _cuenta.Retiro(Monto);
-            if (extraccion == null)
+            try
             {
-                return BadRequest("Saldo Insuficiente");
+                var extraccion = await _cuenta.Retiro(Monto);
+                return Ok(extraccion);
             }
-            return Ok(extraccion);
+            catch (Exception ex )
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
     }
 }

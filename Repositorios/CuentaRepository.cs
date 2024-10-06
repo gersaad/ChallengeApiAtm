@@ -31,7 +31,7 @@ namespace ChallengeApiAtm.Repositorios
             var cuenta = await ObtenerCuenta();
             if (cuenta == null)
             {
-                return null;
+                throw new Exception("Error al obtener la cuenta de la tarjeta logueada.");
             }
 
             var UtlimaExtraccion = cuenta.Operaciones.Where(x => x.Tipo == TipoOperacion.Extraccion).OrderByDescending(x => x.Fecha).FirstOrDefault();
@@ -70,14 +70,14 @@ namespace ChallengeApiAtm.Repositorios
             var cuenta = await ObtenerCuenta();
             if (cuenta == null)
             {
-                return null;
+                throw new Exception("Error al obtener la cuenta de la tarjeta logueada.");
             }
 
             var fechaOperacion = DateTime.Now;
 
             if (monto > cuenta.Saldo)
             {
-                return null;
+                throw new Exception("Saldo Insuficiente.");
             }
             else 
             {

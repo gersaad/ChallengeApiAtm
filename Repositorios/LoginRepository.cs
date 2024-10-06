@@ -35,18 +35,18 @@ namespace ChallengeApiAtm.Repositorios
 
             if (loginTarjeta == null)
             {
-                return null;
+                throw new Exception("Numero de Tarjeta Invalido.");
             }
 
             if (loginTarjeta.TarjetaCredencial.Bloqueada)
             {
-                return null;
+                throw new Exception("Tarjeta bloqueada.");
             }
 
             if (!(_passwordHasher.CheckHash(loginTarjeta.TarjetaCredencial.PinHash, tarjeta.Pin)))
             {
                 await PinErroneo(loginTarjeta);
-                return null;
+                throw new Exception("PIN incorrecto.");
             }
 
             loginTarjeta.TarjetaCredencial.IntentosFallidos = 0;

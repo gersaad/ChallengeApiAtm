@@ -25,22 +25,25 @@ namespace ChallengeApiAtm.Controllers
         public async Task<IActionResult> Loguear([FromBody] LoginDTO tarjeta)
         {
 
-            if (string.IsNullOrEmpty(tarjeta.Pin))
+            try
             {
-                return BadRequest("Pin Invalido");
-            }
-            if (string.IsNullOrEmpty(tarjeta.NumeroTarjeta))
-            {
-                return BadRequest("Numero de Tarjeta Invalido");
-            }
+                if (string.IsNullOrEmpty(tarjeta.Pin))
+                {
+                    return BadRequest("Pin Invalido");
+                }
+                if (string.IsNullOrEmpty(tarjeta.NumeroTarjeta))
+                {
+                    return BadRequest("Numero de Tarjeta Invalido");
+                }
 
-            string token = await _login.Loguear(tarjeta);
-            if (token == null)
-            {
-                return Unauthorized("Error al generar Token - Tarjeta o PIN incorrectos o tarjeta bloqueada.");
+                string token = await _login.Loguear(tarjeta);
+                return Ok(new { Token = token });
             }
-
-            return Ok(new { Token = token });
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
 
         }
     }

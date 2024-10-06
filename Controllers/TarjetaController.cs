@@ -33,13 +33,16 @@ namespace ChallengeApiAtm.Controllers
         [HttpGet("Historial")]
         public async Task<IActionResult> GetHistorialTarjeta([FromQuery] int nroPagina = 1, [FromQuery] int registrosPorPagina = 10 )
         {
-         
-            var historial = await _tarjeta.ObtenerHistorialTarjeta(nroPagina, registrosPorPagina);
-            if (historial == null)
+            try
             {
-                return BadRequest("La tarjeta no tiene movimientos o pagina fuera de rango");
+                var historial = await _tarjeta.ObtenerHistorialTarjeta(nroPagina, registrosPorPagina);
+                return Ok(historial);
             }
-            return Ok(historial);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+           
         }
 
     }
